@@ -222,9 +222,7 @@ def _install_copilot_cli_via_winget() -> bool:
         return False
     if attempt.returncode != 0:
         sys.stderr.write(
-            "winget failed to install GitHub Copilot CLI (exit code {code}).\n".format(
-                code=attempt.returncode
-            )
+            f"winget failed to install GitHub Copilot CLI (exit code {attempt.returncode}).\n"
         )
         return False
     sys.stderr.write("GitHub Copilot CLI installed.\n")
@@ -249,9 +247,7 @@ def _install_gh_cli_via_winget() -> bool:
 
     if attempt.returncode != 0:
         sys.stderr.write(
-            "winget failed with exit code {code}; falling back to manual download.\n".format(
-                code=attempt.returncode
-            )
+            f"winget failed with exit code {attempt.returncode}; falling back to manual download.\n"
         )
         return False
     sys.stderr.write("GitHub CLI installed.\n")
@@ -295,7 +291,7 @@ def _install_copilot_cli_via_npm() -> bool:
 
     if attempt.returncode != 0:
         sys.stderr.write(
-            "npm failed to install GitHub Copilot CLI (exit code {code}).\n".format(code=attempt.returncode)
+            f"npm failed to install GitHub Copilot CLI (exit code {attempt.returncode}).\n"
         )
         return False
 
@@ -329,8 +325,8 @@ def _install_gh_cli_via_msi() -> bool:
         )
         if install.returncode != 0:
             sys.stderr.write(
-                "MSI installation failed with exit code {code}. Install GitHub CLI manually from "
-                "https://cli.github.com/.\n".format(code=install.returncode)
+                f"MSI installation failed with exit code {install.returncode}. Install GitHub CLI manually from "
+                "https://cli.github.com/.\n"
             )
             return False
         sys.stderr.write("GitHub CLI installed via MSI.\n")
@@ -485,9 +481,7 @@ def _invoke_setup_helper() -> bool:
         return True
 
     sys.stderr.write(
-        "Copilot setup helper exited with status {code}. Resolve the issue and rerun who_is_jc.\n".format(
-            code=result.returncode
-        )
+        f"Copilot setup helper exited with status {result.returncode}. Resolve the issue and rerun who_is_jc.\n"
     )
     return False
 
@@ -591,7 +585,7 @@ def _run_copilot_cli(prompt: str, *, model: str | None = None) -> tuple[int, str
 def _copilot_command_available(gh_exe: str) -> bool:
     probe = subprocess.run(
         [gh_exe, "copilot", "--help"],
-        capture_output=True,
+        check=False, capture_output=True,
         text=True,
         env=_copilot_env(),
     )

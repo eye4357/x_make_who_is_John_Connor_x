@@ -5,13 +5,14 @@ from __future__ import annotations
 import json
 import os
 import sys
+from collections.abc import Mapping
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Any
 
 if __package__ in {None, ""}:  # pragma: no cover - executed when run as script
     sys.path.append(str(Path(__file__).resolve().parent))
-    import who_is_jc  # type: ignore[import]  # noqa: E402
+    import who_is_jc  # type: ignore[import]
 else:
     from . import who_is_jc
 

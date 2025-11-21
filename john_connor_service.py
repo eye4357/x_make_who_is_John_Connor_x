@@ -2,13 +2,10 @@
 
 from __future__ import annotations
 
-from typing import Any, Mapping
+from collections.abc import Mapping
+from typing import Any
 
 try:  # pragma: no cover - optional dependency until shared module installed
-    from z_make_common_x.persona_vetting import (  # type: ignore[import-not-found]
-        PersonaAuditTrail,
-        PersonaVettingService,
-    )
     from z_make_common_x.copilot_normalizer import (  # type: ignore[import-not-found]
         DEFAULT_PERSONA_PROMPT,
         PersonaPromptError,
@@ -19,6 +16,10 @@ try:  # pragma: no cover - optional dependency until shared module installed
         score_from_answer,
         source_from_response,
         synopsis_from_answer,
+    )
+    from z_make_common_x.persona_vetting import (  # type: ignore[import-not-found]
+        PersonaAuditTrail,
+        PersonaVettingService,
     )
 except ImportError as exc:  # pragma: no cover - diagnostic aid
     raise ImportError(
