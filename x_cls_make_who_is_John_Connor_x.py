@@ -29,7 +29,9 @@ VALID_COPILOT_MODELS: tuple[str, ...] = (
 )
 
 try:  # pragma: no cover - optional dependency
-    _copilot_setup_module = importlib.import_module("x_make_copilot_cli_one_time_setup_x")
+    _copilot_setup_module = importlib.import_module(
+        "x_make_copilot_cli_one_time_setup_x"
+    )
 except ImportError:  # pragma: no cover - helper not available in all environments
     CopilotSetupHelper: type[Any] | None = None
 else:
@@ -117,20 +119,28 @@ class x_cls_make_who_is_John_Connor_x:  # noqa: N801 - legacy public API
 
         env_updates: dict[str, str | None] = {}
         if allow_http_fallback is not None:
-            env_updates["COPILOT_HTTP_FALLBACK"] = "1" if _bool_option(payload, "http_fallback", True) else "0"
+            env_updates["COPILOT_HTTP_FALLBACK"] = (
+                "1" if _bool_option(payload, "http_fallback", True) else "0"
+            )
         if allow_token_prompt is not None:
             if _bool_option(payload, "allow_token_prompt", True):
-                env_updates[who_is_jc._DISABLE_PROMPT_FLAG] = None  # noqa: SLF001 - module-level constant
+                env_updates[who_is_jc._DISABLE_PROMPT_FLAG] = (
+                    None
+                )
             else:
                 env_updates[who_is_jc._DISABLE_PROMPT_FLAG] = "1"  # noqa: SLF001
 
         attempt_setup = _bool_option(payload, "attempt_setup")
         setup_options_raw = payload.get("setup_options")
-        setup_options = setup_options_raw if isinstance(setup_options_raw, Mapping) else {}
+        setup_options = (
+            setup_options_raw if isinstance(setup_options_raw, Mapping) else {}
+        )
 
         with _temporary_env(env_updates):
             try:
-                response = who_is_jc.query_copilot(question, model=model, language=language)
+                response = who_is_jc.query_copilot(
+                    question, model=model, language=language
+                )
             except RuntimeError as exc:
                 result: dict[str, Any] = {
                     "status": "error",
@@ -138,12 +148,16 @@ class x_cls_make_who_is_John_Connor_x:  # noqa: N801 - legacy public API
                     "message": str(exc),
                     "available_models": list(VALID_COPILOT_MODELS),
                     "options": {
-                        "http_fallback": _bool_option(payload, "http_fallback", True)
-                        if allow_http_fallback is not None
-                        else None,
-                        "allow_token_prompt": _bool_option(payload, "allow_token_prompt", True)
-                        if allow_token_prompt is not None
-                        else None,
+                        "http_fallback": (
+                            _bool_option(payload, "http_fallback", True)
+                            if allow_http_fallback is not None
+                            else None
+                        ),
+                        "allow_token_prompt": (
+                            _bool_option(payload, "allow_token_prompt", True)
+                            if allow_token_prompt is not None
+                            else None
+                        ),
                         "model": model,
                     },
                 }
@@ -169,12 +183,16 @@ class x_cls_make_who_is_John_Connor_x:  # noqa: N801 - legacy public API
             "language": language,
             "available_models": list(VALID_COPILOT_MODELS),
             "options": {
-                "http_fallback": _bool_option(payload, "http_fallback", True)
-                if allow_http_fallback is not None
-                else None,
-                "allow_token_prompt": _bool_option(payload, "allow_token_prompt", True)
-                if allow_token_prompt is not None
-                else None,
+                "http_fallback": (
+                    _bool_option(payload, "http_fallback", True)
+                    if allow_http_fallback is not None
+                    else None
+                ),
+                "allow_token_prompt": (
+                    _bool_option(payload, "allow_token_prompt", True)
+                    if allow_token_prompt is not None
+                    else None
+                ),
                 "model": model,
                 "language": language,
             },

@@ -103,7 +103,9 @@ def _run_probe(env: dict[str, str]) -> subprocess.CompletedProcess[str]:
         )
     except subprocess.TimeoutExpired as exc:
         stdout = exc.stdout or ""
-        stderr = exc.stderr or "Probe timed out (Copilot CLI likely awaits trust or /login)."
+        stderr = (
+            exc.stderr or "Probe timed out (Copilot CLI likely awaits trust or /login)."
+        )
         if isinstance(stdout, bytes):
             stdout = stdout.decode("utf-8", "replace")
         if isinstance(stderr, bytes):
@@ -147,7 +149,9 @@ def main() -> int:
 
     tool = _ensure_copilot_cli()
     if not tool:
-        print("GitHub Copilot CLI not found on PATH. Install it with `npm install -g @github/copilot` and retry.")
+        print(
+            "GitHub Copilot CLI not found on PATH. Install it with `npm install -g @github/copilot` and retry."
+        )
         return 1
 
     env = _build_env(pat)
@@ -163,7 +167,9 @@ def main() -> int:
         return 0
 
     if probe.returncode == 0 and not stdout:
-        print("Copilot CLI returned no output (likely still needs an interactive /login).")
+        print(
+            "Copilot CLI returned no output (likely still needs an interactive /login)."
+        )
     else:
         print("Copilot CLI reported an error during the probe:")
         if stderr:
@@ -171,13 +177,19 @@ def main() -> int:
         elif stdout:
             print(stdout)
 
-    answer = input("Open an interactive Copilot CLI session now? [Y/n]: ").strip().lower()
+    answer = (
+        input("Open an interactive Copilot CLI session now? [Y/n]: ").strip().lower()
+    )
     if answer in {"", "y", "yes"}:
         _launch_interactive(env)
-        print("Re-run who_is_jc.py to verify the setup. If it still fails, run this helper again.")
+        print(
+            "Re-run who_is_jc.py to verify the setup. If it still fails, run this helper again."
+        )
         return 0
 
-    print("Setup not completed. Run `copilot`, execute /login, then rerun who_is_jc.py.")
+    print(
+        "Setup not completed. Run `copilot`, execute /login, then rerun who_is_jc.py."
+    )
     return 1
 
 

@@ -67,7 +67,9 @@ def _failure(code: int, message: str) -> tuple[int, str, str]:
     return code, "", f"{message}\n"
 
 
-def _query_copilot_http(question: str, token: str, *, model: str | None = None) -> tuple[str, dict[str, object]]:
+def _query_copilot_http(
+    question: str, token: str, *, model: str | None = None
+) -> tuple[str, dict[str, object]]:
     endpoint = os.environ.get(
         "COPILOT_API_URL",
         "https://copilot-proxy.githubusercontent.com/v1/chat/completions",
@@ -97,7 +99,9 @@ def _query_copilot_http(question: str, token: str, *, model: str | None = None) 
         "stream": False,
     }
     data = json.dumps(payload).encode("utf-8")
-    request = urllib.request.Request(endpoint, data=data, headers=headers, method="POST")
+    request = urllib.request.Request(
+        endpoint, data=data, headers=headers, method="POST"
+    )
     try:
         with urllib.request.urlopen(request, timeout=60) as response:
             raw_bytes = response.read()
@@ -105,7 +109,9 @@ def _query_copilot_http(question: str, token: str, *, model: str | None = None) 
     except urllib.error.HTTPError as exc:
         detail = exc.read().decode("utf-8", errors="ignore") if exc.fp else exc.reason
         raise RuntimeError(f"Copilot HTTP request failed ({exc.code}): {detail}")
-    except urllib.error.URLError as exc:  # pragma: no cover - network failures vary by environment
+    except (
+        urllib.error.URLError
+    ) as exc:  # pragma: no cover - network failures vary by environment
         raise RuntimeError(f"Copilot HTTP request failed: {exc.reason}")
 
     try:
@@ -149,7 +155,9 @@ def _path_variants(executable_names: list[str]) -> list[str]:
 
 
 def _find_winget() -> str | None:
-    winget_path = os.path.join(os.environ.get("SystemRoot", r"C:\\Windows"), "System32", "winget.exe")
+    winget_path = os.path.join(
+        os.environ.get("SystemRoot", r"C:\\Windows"), "System32", "winget.exe"
+    )
     if os.path.exists(winget_path):
         return winget_path
     candidate = os.path.join(
@@ -237,7 +245,13 @@ def _install_gh_cli_via_winget() -> bool:
     sys.stderr.write("Attempting to install GitHub CLI via winget...\n")
     try:
         attempt = subprocess.run(
-            [winget, "install", "GitHub.cli", "--accept-source-agreements", "--accept-package-agreements"],
+            [
+                winget,
+                "install",
+                "GitHub.cli",
+                "--accept-source-agreements",
+                "--accept-package-agreements",
+            ],
             check=False,
             timeout=120,
         )
@@ -314,7 +328,11 @@ def _install_gh_cli_via_msi() -> bool:
         sys.stderr.write("Download complete. Installing...\n")
         install = subprocess.run(
             [
-                os.path.join(os.environ.get("SystemRoot", r"C:\\Windows"), "System32", "msiexec.exe"),
+                os.path.join(
+                    os.environ.get("SystemRoot", r"C:\\Windows"),
+                    "System32",
+                    "msiexec.exe",
+                ),
                 "/i",
                 tmp_path,
                 "/qn",
@@ -332,7 +350,9 @@ def _install_gh_cli_via_msi() -> bool:
         sys.stderr.write("GitHub CLI installed via MSI.\n")
         return True
     except Exception as exc:  # noqa: BLE001 - keep turnkey
-        sys.stderr.write(f"Failed to download/install GitHub CLI automatically: {exc}\n")
+        sys.stderr.write(
+            f"Failed to download/install GitHub CLI automatically: {exc}\n"
+        )
         sys.stderr.write("Install manually from https://cli.github.com/ and retry.\n")
         return False
     finally:
@@ -345,8 +365,12 @@ def _install_gh_cli_via_msi() -> bool:
 
 def _find_gh_executable() -> str | None:
     gh_candidates = [
-        os.path.join(os.environ.get("ProgramFiles", r"C:\\Program Files"), "GitHub CLI", "gh.exe"),
-        os.path.join(os.environ.get("LOCALAPPDATA", ""), "Programs", "GitHub CLI", "gh.exe"),
+        os.path.join(
+            os.environ.get("ProgramFiles", r"C:\\Program Files"), "GitHub CLI", "gh.exe"
+        ),
+        os.path.join(
+            os.environ.get("LOCALAPPDATA", ""), "Programs", "GitHub CLI", "gh.exe"
+        ),
     ]
     path_dirs = os.environ.get("PATH", "").split(os.pathsep)
     gh_candidates.extend(os.path.join(d, "gh.exe") for d in path_dirs if d)
@@ -420,7 +444,11 @@ def _prompt_for_token() -> str | None:
     if not token:
         return None
 
-    persist_answer = input("Persist token via `setx GH_TOKEN` for future runs? [y/N]: ").strip().lower()
+    persist_answer = (
+        input("Persist token via `setx GH_TOKEN` for future runs? [y/N]: ")
+        .strip()
+        .lower()
+    )
     if persist_answer in {"y", "yes"}:
         _persist_token(token)
     return token
@@ -461,7 +489,9 @@ def _invoke_setup_helper() -> bool:
     _SETUP_HELPER_ATTEMPTED = True
 
     if not _SETUP_HELPER_PATH.exists():
-        sys.stderr.write("Setup helper SETUP_COPILOT_CLI.py was not found; skipping automatic onboarding.\n")
+        sys.stderr.write(
+            "Setup helper SETUP_COPILOT_CLI.py was not found; skipping automatic onboarding.\n"
+        )
         return False
 
     python_exe = sys.executable or "python"
@@ -496,6 +526,7 @@ def _is_auth_error(output: str) -> bool:
         "start 'copilot' and run the '/login'",
     )
     return any(indicator in lowered for indicator in indicators)
+
 
 def _run_copilot_cli(prompt: str, *, model: str | None = None) -> tuple[int, str, str]:
     exe = _find_copilot_cli_executable()
@@ -585,7 +616,8 @@ def _run_copilot_cli(prompt: str, *, model: str | None = None) -> tuple[int, str
 def _copilot_command_available(gh_exe: str) -> bool:
     probe = subprocess.run(
         [gh_exe, "copilot", "--help"],
-        check=False, capture_output=True,
+        check=False,
+        capture_output=True,
         text=True,
         env=_copilot_env(),
     )
@@ -662,7 +694,9 @@ def run_copilot_query(prompt: str, *, model: str | None = None) -> tuple[int, st
         return _failure(127, "GitHub Copilot CLI extension is unavailable.")
 
     if not _ensure_gh_auth(gh_exe):
-        return _failure(127, "GitHub CLI authentication is required. Run `gh auth login` and retry.")
+        return _failure(
+            127, "GitHub CLI authentication is required. Run `gh auth login` and retry."
+        )
 
     result = subprocess.run(
         [gh_exe, "copilot", "suggest", prompt],
@@ -714,10 +748,18 @@ def query_copilot(
     if fallback_raw is None:
         fallback_allowed = True
     else:
-        fallback_allowed = fallback_raw.strip().lower() in {"1", "true", "yes", "on", "y"}
+        fallback_allowed = fallback_raw.strip().lower() in {
+            "1",
+            "true",
+            "yes",
+            "on",
+            "y",
+        }
     if token and fallback_allowed:
         try:
-            http_answer, http_payload = _query_copilot_http(effective_question, token, model=model)
+            http_answer, http_payload = _query_copilot_http(
+                effective_question, token, model=model
+            )
         except Exception as exc:  # noqa: BLE001 - fallback path
             if not message:
                 message = str(exc)
@@ -734,7 +776,10 @@ def query_copilot(
                     },
                     "language": language,
                 }
-    detail = message or "Copilot returned an empty response. Run `copilot` interactively and complete `/login` once to authorize this PAT."
+    detail = (
+        message
+        or "Copilot returned an empty response. Run `copilot` interactively and complete `/login` once to authorize this PAT."
+    )
     raise RuntimeError(detail)
 
 
@@ -765,5 +810,8 @@ def _apply_language_directive(question: str, language: str | None) -> str:
             + "\n\nResponde en español latino, claro, cálido y con empatía. Si el contenido incluye nombres propios en otro idioma, consérvalos."
         )
     if lang.startswith("en"):
-        return question + "\n\nPlease answer in clear, friendly English suitable for all ages."
+        return (
+            question
+            + "\n\nPlease answer in clear, friendly English suitable for all ages."
+        )
     return question + f"\n\nPlease answer in {language} with warmth and clarity."

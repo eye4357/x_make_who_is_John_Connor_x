@@ -5,27 +5,19 @@ from __future__ import annotations
 from collections.abc import Mapping
 from typing import Any, cast
 
-try:  # pragma: no cover - optional dependency until shared module installed
-    from z_make_common_x.copilot_normalizer import (  # type: ignore[import-not-found]
-        DEFAULT_PERSONA_PROMPT,
-        PersonaPromptError,
-        extract_answer_text,
-        extract_highlights,
-        extract_tags,
-        format_persona_question,
-        score_from_answer,
-        source_from_response,
-        synopsis_from_answer,
-    )
-    from z_make_common_x.persona_vetting import (  # type: ignore[import-not-found]
-        PersonaVettingError,
-        PersonaVettingService,
-    )
-except ImportError as exc:  # pragma: no cover - diagnostic aid
-    raise ImportError(
-        "z_make_common_x is required for JohnConnorPersonaService; install with "
-        "'pip install -e ../z_make_common_x'"
-    ) from exc
+from x_make_common_x import (
+    DEFAULT_PERSONA_PROMPT,
+    PersonaPromptError,
+    PersonaVettingError,
+    PersonaVettingService,
+    extract_answer_text,
+    extract_highlights,
+    extract_tags,
+    format_persona_question,
+    score_from_answer,
+    source_from_response,
+    synopsis_from_answer,
+)
 
 from . import who_is_jc
 
@@ -51,7 +43,9 @@ class JohnConnorPersonaService(PersonaVettingService):
             raise PersonaVettingError(str(exc)) from exc
 
         try:
-            response_raw = who_is_jc.query_copilot(question, model=self._model, language=self._language)
+            response_raw = who_is_jc.query_copilot(
+                question, model=self._model, language=self._language
+            )
         except RuntimeError as exc:  # pragma: no cover - passthrough
             raise PersonaVettingError(str(exc)) from exc
 

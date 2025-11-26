@@ -10,7 +10,7 @@ This folder hosts automation around the query “Who is John Connor?”.
 
 ## Files
 - **who_is_jc.py** – Turnkey helper that runs the GitHub Copilot CLI (or falls back to the legacy GitHub CLI Copilot extension when necessary). It attempts to install required tooling, but you may need to install the standalone Copilot CLI manually from [github.com/github/copilot-cli](https://github.com/github/copilot-cli).
-- **john_connor_service.py** – Adapter implementing `PersonaVettingService` from `z_make_common_x`, enabling shared persona vetting logic with the Robot Senate runtime.
+- **john_connor_service.py** – Adapter implementing `PersonaVettingService` from `x_make_common_x`, enabling shared persona vetting logic with the Robot Senate runtime.
 - **first.txt** – Placeholder file maintained for compatibility; currently empty.
 
 ## Usage
@@ -40,7 +40,7 @@ If the CLI isn’t yet authorized, follow the script’s guidance (`github-copil
 ## Shared Persona Vetting
 - Install the shared commons module once per workspace:
 	```powershell
-	pip install -e ../z_make_common_x
+	pip install -e ../x_make_common_x
 	```
 - Consume the adapter from other tools:
 	```python
