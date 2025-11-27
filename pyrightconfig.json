@@ -1,0 +1,17 @@
+{
+    "include": [
+        "john_connor_service.py",
+        "who_is_jc.py",
+        "x_cls_make_who_is_John_Connor_x.py",
+        "SETUP_COPILOT_CLI.py"
+    ],
+    "stubPath": "../x_make_common_x/shared_typings",
+    "executionEnvironments": [
+        {
+            "root": ".",
+            "extraPaths": [
+                "../x_make_common_x/shared_typings"
+            ]
+        }
+    ]
+}

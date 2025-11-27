@@ -124,9 +124,7 @@ class x_cls_make_who_is_John_Connor_x:  # noqa: N801 - legacy public API
             )
         if allow_token_prompt is not None:
             if _bool_option(payload, "allow_token_prompt", True):
-                env_updates[who_is_jc._DISABLE_PROMPT_FLAG] = (
-                    None
-                )
+                env_updates[who_is_jc._DISABLE_PROMPT_FLAG] = None
             else:
                 env_updates[who_is_jc._DISABLE_PROMPT_FLAG] = "1"  # noqa: SLF001
 
